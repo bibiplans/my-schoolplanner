@@ -1,0 +1,531 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PlanBee ♡</title>
+<style>
+:root {
+  --pink:#f5c5d5;
+  --green:#dcebd9;
+  --blue:#dce9f8;
+  --purple:#e8def7;
+  --bg:#fff8fa;
+  --card:#fffdfc;
+  --ink:#514653;
+  --muted:#918391;
+  --line:#f0e5eb;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:"Trebuchet MS",Arial,sans-serif;
+  transition:background .2s;
+}
+button,input,select,textarea { font:inherit; }
+button { cursor:pointer; }
+header {
+  padding:24px 6%;
+  background:var(--card);
+  border-bottom:1px solid var(--line);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:15px;
+}
+.logo { font-size:30px; font-weight:bold; }
+.logo span { color:#d79ab2; }
+.tagline { color:var(--muted); margin-top:5px; font-size:13px; }
+.themes { display:flex; align-items:center; gap:9px; }
+.swatch {
+  width:25px; height:25px; border-radius:50%;
+  border:2px solid white; outline:1px solid var(--line);
+}
+.swatch:hover { transform:scale(1.12); }
+nav {
+  display:flex; flex-wrap:wrap; gap:8px;
+  padding:15px 6%;
+  background:var(--card);
+}
+nav button,.btn {
+  border:0; border-radius:13px; padding:10px 15px;
+  background:var(--bg); color:var(--ink);
+}
+nav button.active,.btn.primary {
+  background:var(--pink);
+  font-weight:bold;
+}
+main { max-width:1100px; margin:25px auto; padding:0 20px; }
+h1 { font-size:28px; margin-bottom:8px; }
+h2 { font-size:19px; }
+p { line-height:1.5; }
+.muted { color:var(--muted); }
+.grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:16px;
+}
+.card {
+  background:var(--card); border:1px solid var(--line);
+  border-radius:22px; padding:20px;
+  box-shadow:0 5px 18px #6d4c5a08;
+}
+.big-number { font-size:30px; font-weight:bold; margin:12px 0; }
+input,select,textarea {
+  width:100%; padding:12px; border:1px solid var(--line);
+  border-radius:12px; background:white; color:var(--ink);
+  margin:5px 0 12px;
+}
+label { font-size:13px; font-weight:bold; }
+.form-grid {
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:10px;
+}
+.task {
+  display:flex; align-items:flex-start; gap:12px;
+  padding:14px 0; border-bottom:1px solid var(--line);
+}
+.task:last-child { border-bottom:0; }
+.task input[type=checkbox] { width:18px; margin-top:4px; }
+.task-info { flex:1; min-width:0; }
+.task-title { font-weight:bold; overflow-wrap:anywhere; }
+.task.done .task-title { text-decoration:line-through; opacity:.55; }
+.task-meta { font-size:12px; color:var(--muted); margin-top:5px; }
+.tag {
+  display:inline-block; background:var(--purple);
+  padding:4px 8px; border-radius:9px; font-size:11px;
+  margin-top:5px;
+}
+.delete {
+  border:0; background:transparent; color:#b36c83;
+  padding:5px; font-size:17px;
+}
+.empty { text-align:center; padding:22px; color:var(--muted); }
+.hidden { display:none !important; }
+footer {
+  text-align:center; color:var(--muted);
+  padding:35px 15px; font-size:13px;
+}
+.notice {
+  padding:12px; border-radius:12px;
+  background:var(--green); font-size:13px;
+}
+@media(max-width:500px) {
+  header { padding:20px; }
+  .logo { font-size:26px; }
+  nav { padding:12px 15px; }
+  nav button { padding:9px 11px; }
+  main { padding:0 14px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">Plan<span>Bee</span> ♡</div>
+    <div class="tagline">a little space for your big ideas ✿</div>
+  </div>
+  <div class="themes">
+    <span class="muted">Theme</span>
+    <button class="swatch" style="background:#f5c5d5"
+      aria-label="Pink theme" onclick="setTheme('pink')"></button>
+    <button class="swatch" style="background:#dcebd9"
+      aria-label="Green theme" onclick="setTheme('green')"></button>
+    <button class="swatch" style="background:#dce9f8"
+      aria-label="Blue theme" onclick="setTheme('blue')"></button>
+    <button class="swatch" style="background:#e8def7"
+      aria-label="Purple theme" onclick="setTheme('purple')"></button>
+  </div>
+</header>
+
+<nav id="nav">
+  <button class="active" data-page="Home">Home</button>
+  <button data-page="Homework">Homework</button>
+  <button data-page="Tests">Tests</button>
+  <button data-page="Projects">Projects</button>
+  <button data-page="Clubs">Clubs</button>
+  <button data-page="Things Due">Things Due</button>
+  <button data-page="Make-Up Tests">Make-Up Tests</button>
+</nav>
+
+<main>
+  <section id="homePage">
+    <h1>Welcome to PlanBee! 🌷</h1>
+    <p class="muted" id="today"></p>
+    <div class="grid">
+      <div class="card">
+        <h2>My tasks ♡</h2>
+        <div class="big-number" id="totalCount">0</div>
+        <div class="muted">tasks to keep track of</div>
+      </div>
+      <div class="card">
+        <h2>Completed ✨</h2>
+        <div class="big-number" id="doneCount">0</div>
+        <div class="muted">tasks checked off</div>
+      </div>
+      <div class="card">
+        <h2>Coming up 📅</h2>
+        <div class="big-number" id="upcomingCount">0</div>
+        <div class="muted">unfinished tasks with due dates</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:18px">
+      <h2>Add a new task ✏️</h2>
+      <form id="taskForm">
+        <label for="taskTitle">Task name</label>
+        <input id="taskTitle" maxlength="180"
+          placeholder="e.g. Finish science worksheet" required>
+
+        <div class="form-grid">
+          <div>
+            <label for="taskCategory">Category</label>
+            <select id="taskCategory">
+              <option>Homework</option>
+              <option>Tests</option>
+              <option>Projects</option>
+              <option>Clubs</option>
+              <option>Things Due</option>
+              <option>Make-Up Tests</option>
+            </select>
+          </div>
+          <div>
+            <label for="taskDate">Due date</label>
+            <input id="taskDate" type="date">
+          </div>
+          <div>
+            <label for="taskTime">Reminder time (optional)</label>
+            <input id="taskTime" type="time">
+          </div>
+        </div>
+
+        <label for="taskNotes">Notes (optional)</label>
+        <textarea id="taskNotes" rows="2"
+          placeholder="Add details or things to remember..."></textarea>
+
+        <button class="btn primary" type="submit">＋ Add task</button>
+      </form>
+    </div>
+
+    <div class="card" style="margin-top:18px">
+      <h2>Coming up next 🌼</h2>
+      <div id="homeTasks"></div>
+    </div>
+
+    <div class="card" style="margin-top:18px">
+      <h2>Reminders 🔔</h2>
+      <p class="muted">Allow notifications to receive reminders while PlanBee is open in this browser.</p>
+      <button class="btn primary" id="notifyButton" type="button">
+        Enable notifications
+      </button>
+      <p id="notifyStatus" class="muted"></p>
+    </div>
+  </section>
+
+  <section id="categoryPage" class="hidden">
+    <h1 id="categoryHeading">Homework</h1>
+    <p class="muted">Everything for this category, all in one place. ♡</p>
+    <div class="card">
+      <div id="categoryTasks"></div>
+    </div>
+    <button class="btn primary" style="margin-top:15px"
+      onclick="showPage('Home')">＋ Add a task</button>
+  </section>
+</main>
+
+<footer>Made with ♡ by Akshara Reddy Kohir · PlanBee</footer>
+
+<script>
+const TASK_KEY = 'bibiPlansTasks_v2';
+const COLOR_KEY = 'bibiPlansColor_v2';
+
+const categories = [
+  'Homework','Tests','Projects','Clubs','Things Due','Make-Up Tests'
+];
+
+function readTasks() {
+  try {
+    const saved = localStorage.getItem(TASK_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed)) return parsed.map(normalizeTask);
+    }
+
+    // Attempt to bring forward tasks saved by older versions.
+    const old = localStorage.getItem('bibiTasks');
+    if (old) {
+      const parsed = JSON.parse(old);
+      if (Array.isArray(parsed)) {
+        const converted = parsed.map(normalizeTask);
+        localStorage.setItem(TASK_KEY, JSON.stringify(converted));
+        return converted;
+      }
+    }
+  } catch (error) {
+    console.warn('Could not load saved tasks:', error);
+  }
+  return [];
+}
+
+function normalizeTask(task) {
+  return {
+    id: task.id || (Date.now().toString(36) + Math.random().toString(36).slice(2)),
+    title: task.title || task.name || task.task || 'Untitled task',
+    category: categories.includes(task.category || task.type)
+      ? (task.category || task.type) : 'Homework',
+    date: task.date || task.dueDate || task.due || '',
+    time: task.time || task.reminderTime || '',
+    notes: task.notes || task.description || '',
+    done: Boolean(task.done || task.completed),
+    reminded: Boolean(task.reminded)
+  };
+}
+
+let tasks = readTasks();
+let currentPage = 'Home';
+
+function saveTasks() {
+  localStorage.setItem(TASK_KEY, JSON.stringify(tasks));
+}
+
+function setTheme(theme) {
+  const palettes = {
+    pink:   ['#f5c5d5','#fff8fa'],
+    green:  ['#dcebd9','#f6fbf4'],
+    blue:   ['#dce9f8','#f5f9ff'],
+    purple: ['#e8def7','#faf7ff']
+  };
+  if (!palettes[theme]) theme = 'pink';
+  document.documentElement.style.setProperty('--pink', palettes[theme][0]);
+  document.documentElement.style.setProperty('--bg', palettes[theme][1]);
+  document.documentElement.style.setProperty('--green',
+    theme === 'green' ? '#dcebd9' : '#e4f0df');
+  localStorage.setItem(COLOR_KEY, theme);
+}
+
+function showPage(page) {
+  currentPage = page;
+  document.getElementById('homePage').classList.toggle('hidden', page !== 'Home');
+  document.getElementById('categoryPage').classList.toggle('hidden', page === 'Home');
+
+  document.querySelectorAll('#nav button').forEach(button => {
+    button.classList.toggle('active', button.dataset.page === page);
+  });
+
+  if (page !== 'Home') {
+    document.getElementById('categoryHeading').textContent = page;
+  }
+  renderTasks();
+}
+
+document.getElementById('nav').addEventListener('click', event => {
+  const button = event.target.closest('button[data-page]');
+  if (button) showPage(button.dataset.page);
+});
+
+document.getElementById('taskForm').addEventListener('submit', event => {
+  event.preventDefault();
+
+  const title = document.getElementById('taskTitle').value.trim();
+  if (!title) return;
+
+  tasks.push({
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2),
+    title,
+    category: document.getElementById('taskCategory').value,
+    date: document.getElementById('taskDate').value,
+    time: document.getElementById('taskTime').value,
+    notes: document.getElementById('taskNotes').value.trim(),
+    done: false,
+    reminded: false
+  });
+
+  saveTasks();
+  event.target.reset();
+  renderTasks();
+  showPage('Home');
+});
+
+function taskHTML(task) {
+  const item = document.createElement('div');
+  item.className = 'task' + (task.done ? ' done' : '');
+
+  const check = document.createElement('input');
+  check.type = 'checkbox';
+  check.checked = task.done;
+  check.setAttribute('aria-label', 'Mark task complete');
+  check.addEventListener('change', () => {
+    task.done = check.checked;
+    saveTasks();
+    renderTasks();
+  });
+
+  const info = document.createElement('div');
+  info.className = 'task-info';
+
+  const title = document.createElement('div');
+  title.className = 'task-title';
+  title.textContent = task.title;
+  info.appendChild(title);
+
+  const meta = document.createElement('div');
+  meta.className = 'task-meta';
+  meta.textContent = task.date
+    ? 'Due: ' + task.date + (task.time ? ' · ' + task.time : '')
+    : 'No due date';
+  info.appendChild(meta);
+
+  const tag = document.createElement('span');
+  tag.className = 'tag';
+  tag.textContent = task.category;
+  info.appendChild(tag);
+
+  if (task.notes) {
+    const notes = document.createElement('div');
+    notes.className = 'task-meta';
+    notes.textContent = task.notes;
+    info.appendChild(notes);
+  }
+
+  const del = document.createElement('button');
+  del.className = 'delete';
+  del.type = 'button';
+  del.textContent = '×';
+  del.title = 'Delete task';
+  del.setAttribute('aria-label', 'Delete ' + task.title);
+  del.addEventListener('click', () => {
+    if (confirm('Delete this task?')) {
+      tasks = tasks.filter(t => t.id !== task.id);
+      saveTasks();
+      renderTasks();
+    }
+  });
+
+  item.append(check, info, del);
+  return item;
+}
+
+function fillList(container, list) {
+  container.replaceChildren();
+  if (!list.length) {
+    const empty = document.createElement('div');
+    empty.className = 'empty';
+    empty.textContent = 'Nothing here yet! Enjoy the free space. ♡';
+    container.appendChild(empty);
+    return;
+  }
+  list.forEach(task => container.appendChild(taskHTML(task)));
+}
+
+function renderTasks() {
+  const unfinished = tasks.filter(task => !task.done);
+  const dated = unfinished.filter(task => task.date)
+    .sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
+
+  document.getElementById('totalCount').textContent = tasks.length;
+  document.getElementById('doneCount').textContent =
+    tasks.filter(task => task.done).length;
+  document.getElementById('upcomingCount').textContent = dated.length;
+
+  fillList(document.getElementById('homeTasks'), dated.slice(0, 5));
+  if (!dated.length) {
+    fillList(document.getElementById('homeTasks'), unfinished.slice(0, 5));
+  }
+
+  if (currentPage !== 'Home') {
+    fillList(
+      document.getElementById('categoryTasks'),
+      tasks.filter(task => task.category === currentPage)
+        .sort((a, b) => (a.date || '9999').localeCompare(b.date || '9999'))
+    );
+  }
+}
+
+function updateNotificationStatus() {
+  const status = document.getElementById('notifyStatus');
+  const button = document.getElementById('notifyButton');
+
+  if (!('Notification' in window)) {
+    status.textContent = 'This browser does not support notifications.';
+    button.disabled = true;
+  } else if (Notification.permission === 'granted') {
+    status.textContent = 'Notifications are enabled for this browser. ♡';
+    button.textContent = 'Notifications enabled';
+  } else if (Notification.permission === 'denied') {
+    status.textContent = 'Notifications are blocked. You can change this in your browser site settings.';
+  } else {
+    status.textContent = 'You can allow notifications when you are ready.';
+  }
+}
+
+document.getElementById('notifyButton').addEventListener('click', async () => {
+  if (!('Notification' in window)) {
+    updateNotificationStatus();
+    return;
+  }
+  try {
+    await Notification.requestPermission();
+  } catch (error) {
+    console.warn('Notification permission request failed:', error);
+  }
+  updateNotificationStatus();
+  checkReminders();
+});
+
+function checkReminders() {
+  if (!('Notification' in window) ||
+      Notification.permission !== 'granted') return;
+
+  const now = new Date();
+
+  tasks.forEach(task => {
+    if (task.done || task.reminded || !task.date || !task.time) return;
+
+    const due = new Date(task.date + 'T' + task.time);
+    if (Number.isNaN(due.getTime())) return;
+
+    // Notify during the 60 seconds after the reminder time.
+    const difference = now.getTime() - due.getTime();
+    if (difference >= 0 && difference < 60000) {
+      try {
+        new Notification('PlanBee reminder ♡', {
+          body: task.title + ' · ' + task.category
+        });
+        task.reminded = true;
+        saveTasks();
+      } catch (error) {
+        console.warn('Could not show notification:', error);
+      }
+    }
+  });
+}
+
+function updateDate() {
+  document.getElementById('today').textContent =
+    new Date().toLocaleDateString(undefined, {
+      weekday:'long', month:'long', day:'numeric', year:'numeric'
+    });
+}
+
+try {
+  setTheme(localStorage.getItem(COLOR_KEY) || 'pink');
+} catch (error) {
+  setTheme('pink');
+}
+
+updateDate();
+renderTasks();
+updateNotificationStatus();
+
+// Reminder checks run while this page is open.
+checkReminders();
+setInterval(checkReminders, 15000);
+</script>
+</body>
+</html>
