@@ -34,9 +34,12 @@ header {
   flex-wrap:wrap;
   gap:15px;
 }
-.logo { font-size:29px; font-weight:bold; }
-.logo span,.logo small { color:#d79ab2; }
-.logo small { font-size:21px; }
+.logo img {
+  width: 120px;
+  height: 70px;
+  object-fit: contain;
+  display: block;
+}
 .tagline { color:var(--muted); font-size:12px; margin-top:4px; }
 .top-controls { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
 .color-controls { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
@@ -158,7 +161,9 @@ footer { text-align:center; color:var(--muted); padding:30px 15px; font-size:13p
 
 <header>
   <div>
-    <div class="logo">Plan<span>Bee</span> <small>♡</small></div>
+    <div class="logo">
+  <img src="Kawaii%20PlanBee%20Bee%20Badge.png" alt="PlanBee logo">
+</div>
     <div class="tagline">a little space for your big ideas ✿</div>
   </div>
   <div class="top-controls">
